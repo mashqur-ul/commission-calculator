@@ -106,10 +106,11 @@ class Calculator
         }
 
         if ($transaction->currency != 'EUR' || $rate > 0) {
-            $amountFixed = $transaction->amount / $rate;
+            $amountFixed = bcdiv($transaction->amount, $rate, 6);
         }
 
-        return round(($amountFixed * ($isEu ? $this->euCommissionRate : $this->nonEuCommissionRate)), 2);
+        $commissionRate = $isEu ? $this->euCommissionRate : $this->nonEuCommissionRate;
+        return round(bcmul($amountFixed, $commissionRate, 6), 2);
     }
 
     /**
