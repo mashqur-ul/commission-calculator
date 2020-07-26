@@ -10,9 +10,9 @@ use Commission\Calculator\Calculator;
 
 $inputFile = __DIR__.'/'.$argv[1];
 $binApi = new BinApi();
-$exchangeRageApi = new ExchangeRateApi();
+$exchangeRateApi = new ExchangeRateApi();
 
-$calculator = new Calculator($inputFile, $binApi, $exchangeRageApi);
+$calculator = new Calculator($inputFile, $binApi, $exchangeRateApi);
 $commissionAmounts = $calculator->calculateCommission();
 
 foreach ($commissionAmounts as $item) {

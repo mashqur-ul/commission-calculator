@@ -8,6 +8,9 @@ use GuzzleHttp\Client;
 
 abstract class BaseApi
 {
+    /**
+     * @var Client
+     */
     protected $client;
 
     public function __construct()

@@ -3,17 +3,34 @@
 
 namespace Commission\Calculator;
 
-
-use Commission\Calculator\Api\BinApi;
-use Commission\Calculator\Api\ExchangeRateApi;
+use Commission\Calculator\Contracts\BinInterface;
+use Commission\Calculator\Contracts\ExchangeRateInterface;
 
 class Calculator
 {
+    /**
+     * @var
+     */
     private $inputFile;
+    /**
+     * @var BinInterface
+     */
     private $binApi;
+    /**
+     * @var ExchangeRateInterface
+     */
     private $exchangeRateApi;
+    /**
+     * @var float
+     */
     private $euCommissionRate = 0.01;
+    /**
+     * @var float
+     */
     private $nonEuCommissionRate = 0.02;
+    /**
+     * @var string[]
+     */
     private $europeanCountries = [
         'AT',
         'BE',
@@ -44,38 +61,44 @@ class Calculator
         'SK',
     ];
 
-    public function __construct($inputFile, BinApi $binApi, ExchangeRateApi $exchangeRateApi)
+    /**
+     * Calculator constructor.
+     * @param $inputFile
+     * @param BinInterface $binApi
+     * @param ExchangeRateInterface $exchangeRateApi
+     */
+    public function __construct($inputFile, BinInterface $binApi, ExchangeRateInterface $exchangeRateApi)
     {
         $this->inputFile = $inputFile;
         $this->binApi = $binApi;
         $this->exchangeRateApi = $exchangeRateApi;
     }
 
+    /**
+     * @return array|false|string[]
+     */
     private function getFileData()
     {
         $fileReader = new FileReader();
         return $fileReader->setFilePath($this->inputFile)->getData();
     }
 
+    /**
+     * @param $bin
+     * @return bool
+     */
     private function isEu($bin)
     {
-        $response = $this->binApi->getBinInfo($bin);
-        if ($response->getStatusCode() == 200) {
-            $binInfo = json_decode($response->getBody(), true);
-            return in_array($binInfo["country"]["alpha2"], $this->europeanCountries);
-        }
+        $countryShortName = $this->binApi->getCountryShortName($bin);
+        return in_array($countryShortName, $this->europeanCountries);
     }
 
-    private function getExchangeRate($currency)
-    {
-        $response = $this->exchangeRateApi->getExchangeRates();
-
-        if ($response->getStatusCode() == 200) {
-            $exchangeRates = json_decode($response->getBody(), true);
-            return $exchangeRates["rates"][$currency] ?? 0;
-        }
-    }
-
+    /**
+     * @param $transaction
+     * @param $isEu
+     * @param $rate
+     * @return float
+     */
     private function commissionAmount($transaction, $isEu, $rate)
     {
         if ($transaction->currency == 'EUR' || $rate == 0) {
@@ -89,6 +112,9 @@ class Calculator
         return round(($amountFixed * ($isEu ? $this->euCommissionRate : $this->nonEuCommissionRate)), 2);
     }
 
+    /**
+     * @return array
+     */
     public function calculateCommission()
     {
         $commissionAmount = [];
@@ -102,7 +128,7 @@ class Calculator
 
             $transaction = json_decode($item);
             $isEu = $this->isEu($transaction->bin);
-            $rate = $this->getExchangeRate($transaction->currency);
+            $rate = $this->exchangeRateApi->getExchangeRate($transaction->currency);
             $commissionAmount[] = $this->commissionAmount($transaction, $isEu, $rate);
         }
 
