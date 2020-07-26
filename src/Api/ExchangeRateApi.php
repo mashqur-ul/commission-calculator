@@ -33,7 +33,7 @@ class ExchangeRateApi extends BaseApi implements ExchangeRateInterface
      * @return int|mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getExchangeRate($currency)
+    public function getExchangeRate($currency) : float
     {
         $latestExchangeRates = $this->getLatestRates();
         if (isset($latestExchangeRates['rates']) && !empty($latestExchangeRates['rates'])) {

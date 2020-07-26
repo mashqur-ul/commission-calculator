@@ -10,5 +10,5 @@ interface ExchangeRateInterface
      * @param $currency
      * @return mixed
      */
-    public function getExchangeRate($currency);
+    public function getExchangeRate($currency) : float ;
 }

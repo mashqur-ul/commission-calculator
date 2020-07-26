@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 final class ExchangeRateApiTest extends TestCase
 {
     private $exchangeRateApi;
+    private $currency = "EUR";
 
     protected function setUp(): void
     {
@@ -23,7 +24,7 @@ final class ExchangeRateApiTest extends TestCase
 
     public function testExchangeRateApiSuccessRequest()
     {
-        $response = $this->exchangeRateApi->getExchangeRates();
-        $this->assertTrue($response->getStatusCode() === 200);
+        $response = $this->exchangeRateApi->getExchangeRate($this->currency);
+        $this->assertTrue(is_float($response));
     }
 }

@@ -26,7 +26,7 @@ final class BinApiTest extends TestCase
 
     public function testBinApiSuccessRequest()
     {
-        $response = $this->binApi->getBinInfo($this->bin);
-        $this->assertTrue($response->getStatusCode() === 200);
+        $response = $this->binApi->getCountryShortName($this->bin);
+        $this->assertTrue(!empty($response) && is_string($response));
     }
 }
