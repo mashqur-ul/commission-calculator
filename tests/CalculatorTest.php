@@ -18,7 +18,7 @@ final class CalculatorTest extends TestCase
 
     public function testExchangeRateApiRequestFailedExceptionIsRaised()
     {
-        $binApi = new BinApi();
+        $binApi = new MockBinApi(200, "");
         $exchangeRateApi = new MockExchangeRateApi(404, "");
         $calculator = new Calculator($this->inputFile, $binApi, $exchangeRateApi);
         $this->expectException(ClientException::class);
@@ -28,7 +28,7 @@ final class CalculatorTest extends TestCase
     public function testBinApiRequestFailedExceptionIsRaised()
     {
         $binApi = new MockBinApi(404, "");
-        $exchangeRateApi = new ExchangeRateApi();
+        $exchangeRateApi = new MockExchangeRateApi(200, "");
         $calculator = new Calculator($this->inputFile, $binApi, $exchangeRateApi);
         $this->expectException(ClientException::class);
         $calculator->calculateCommission();

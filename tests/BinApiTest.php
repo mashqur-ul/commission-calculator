@@ -3,7 +3,7 @@
 namespace Commission\Calculator\Tests;
 
 use Commission\Calculator\Api\BinApi;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use PHPUnit\Framework\TestCase;
 
 final class BinApiTest extends TestCase
@@ -26,7 +26,14 @@ final class BinApiTest extends TestCase
 
     public function testBinApiSuccessRequest()
     {
-        $response = $this->binApi->getCountryShortName($this->bin);
-        $this->assertTrue(!empty($response) && is_string($response));
+        try {
+            $response = $this->binApi->getCountryShortName($this->bin);
+            $this->assertTrue(!empty($response) && is_string($response));
+        } catch (ConnectException $e) {
+            $this->markTestIncomplete(
+                'Test remains incomplete due to internet connection error'
+            );
+        }
+
     }
 }

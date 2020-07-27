@@ -3,6 +3,7 @@
 namespace Commission\Calculator\Tests;
 
 use Commission\Calculator\Api\ExchangeRateApi;
+use GuzzleHttp\Exception\ConnectException;
 use PHPUnit\Framework\TestCase;
 
 final class ExchangeRateApiTest extends TestCase
@@ -24,7 +25,14 @@ final class ExchangeRateApiTest extends TestCase
 
     public function testExchangeRateApiSuccessRequest()
     {
-        $response = $this->exchangeRateApi->getExchangeRate($this->currency);
-        $this->assertTrue(is_float($response));
+        try {
+            $response = $this->exchangeRateApi->getExchangeRate($this->currency);
+            $this->assertTrue(is_float($response));
+        } catch (ConnectException $e) {
+            $this->markTestIncomplete(
+                'Test remains incomplete due to internet connection error'
+            );
+        }
+
     }
 }
