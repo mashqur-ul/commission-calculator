@@ -16,7 +16,7 @@
             "Commission\\Calculator\\": "src/"
         },
         "files": [
-
+            "src/Utility/helpers.php"
         ],
         "exclude-from-classmap": [
             "/Tests/"

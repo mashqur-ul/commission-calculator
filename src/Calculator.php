@@ -110,7 +110,7 @@ class Calculator
         }
 
         $commissionRate = $isEu ? $this->euCommissionRate : $this->nonEuCommissionRate;
-        return round(bcmul($amountFixed, $commissionRate, 6), 2);
+        return number_format(ceil_up(bcmul($amountFixed, $commissionRate, 6)), 2);
     }
 
     /**

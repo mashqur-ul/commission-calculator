@@ -43,7 +43,7 @@ final class CalculatorTest extends TestCase
         $exchangeRateApi = new MockExchangeRateApi(200, $exchangeRateApiMockData);
 
 
-        $expected = [1];
+        $expected = ["1.00"];
         $calculator = new Calculator($this->inputFile, $binApi, $exchangeRateApi);
         $commissionAmount = $calculator->calculateCommission();
 
